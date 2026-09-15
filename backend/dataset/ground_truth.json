@@ -1,0 +1,173 @@
+{
+  "_comment": "TODO: Populate with labeled ground-truth bugs for the seeded_bugs/ samples. Each entry should describe the file, the seeded bug's location/type, and whether it is actually a bug.",
+  "_schema_example": {
+    "id": "string - unique id matching a file in seeded_bugs/",
+    "file": "string - relative path under seeded_bugs/",
+    "is_bug": "boolean - whether this sample actually contains a bug",
+    "bug_type": "string - e.g. 'off-by-one', 'null-deref', 'sql-injection', or null if not a bug",
+    "line": "integer|null - line number of the bug, if applicable",
+    "description": "string - short human description of the bug"
+  },
+  "bugs": [
+    {
+      "id": "paginate",
+      "file": "paginate.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 11,
+      "description": "Off-by-one: `end = start + page_size + 1` includes one extra item, so each page overlaps the next page by one item."
+    },
+    {
+      "id": "moving_average",
+      "file": "moving_average.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 7,
+      "description": "Off-by-one: `range(len(values) - window)` stops one iteration short, so the moving average silently drops the last valid window."
+    },
+    {
+      "id": "chunk_list",
+      "file": "chunk_list.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 7,
+      "description": "Off-by-one: `range(0, len(items) - 1, batch_size)` can exclude a valid starting index at `len(items) - 1`, silently dropping the last chunk of items."
+    },
+    {
+      "id": "battery_monitor",
+      "file": "battery_monitor.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 9,
+      "description": "Wrong comparison operator: uses `>` instead of `<=`, so batteries above the low-battery threshold are reported as low and batteries at or below it are not."
+    },
+    {
+      "id": "shipping_fee",
+      "file": "shipping_fee.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 7,
+      "description": "Wrong comparison operator: uses `<=` instead of `>=`, so orders under the free-shipping threshold ship free while orders that actually qualify are charged."
+    },
+    {
+      "id": "grade_calculator",
+      "file": "grade_calculator.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 7,
+      "description": "Wrong comparison operator: the 'C' branch uses `>` instead of `>=`, so a score of exactly 70 incorrectly falls through to grade 'D'."
+    },
+    {
+      "id": "binary_search",
+      "file": "binary_search.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 6,
+      "description": "Incorrect boundary condition: loop uses `low < high` instead of `low <= high`, so the search misses the target when it is the last remaining candidate."
+    },
+    {
+      "id": "password_validator",
+      "file": "password_validator.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 8,
+      "description": "Incorrect boundary condition: uses `length <= MIN_LENGTH` instead of `length < MIN_LENGTH`, so a password exactly at the minimum length is incorrectly rejected."
+    },
+    {
+      "id": "shopping_cart",
+      "file": "shopping_cart.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 1,
+      "description": "Bad state handling: `cart=[]` is a mutable default argument, so the same list is reused and accumulates items across unrelated calls to `add_item`."
+    },
+    {
+      "id": "retry_tracker",
+      "file": "retry_tracker.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 15,
+      "description": "Bad state handling: `reset_on_success` is a no-op (`pass`), so `attempts` is never reset and a tracker that already succeeded still reports exhausted retries afterward."
+    },
+    {
+      "id": "sql_query",
+      "file": "sql_query.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 9,
+      "description": "SQL injection: the query string is built with `%` string formatting on `username` instead of a parameterized query, so a crafted username can alter the SQL statement."
+    },
+    {
+      "id": "run_diagnostics",
+      "file": "run_diagnostics.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 9,
+      "description": "Command injection: `hostname` is concatenated directly into a shell command passed to `os.system`, so a crafted hostname (e.g. containing `;`) can execute arbitrary shell commands."
+    },
+    {
+      "id": "auth_config",
+      "file": "auth_config.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 4,
+      "description": "Hardcoded secret: `SECRET_KEY` is a literal string committed in source rather than loaded from an environment variable or secret manager, exposing the signing key to anyone with source access."
+    },
+    {
+      "id": "session_store",
+      "file": "session_store.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 13,
+      "description": "Insecure deserialization: `pickle.loads` is called on `raw_cookie_value`, which comes from a client-controlled cookie; a crafted pickle payload can execute arbitrary code."
+    },
+    {
+      "id": "password_hash",
+      "file": "password_hash.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 6,
+      "description": "Weak cryptography: passwords are hashed with unsalted MD5, which is fast to brute-force and unsuitable for password storage; should use a slow, salted algorithm like bcrypt or scrypt."
+    },
+    {
+      "id": "config_parser",
+      "file": "config_parser.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 8,
+      "description": "Bare except clause: `except:` catches every exception (including KeyboardInterrupt/SystemExit), silently masking bugs unrelated to int parsing."
+    },
+    {
+      "id": "order_summary",
+      "file": "order_summary.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 3,
+      "description": "Shadowed builtin: the local variable `dict` shadows the builtin `dict` type within the function, which is confusing and error-prone if the constructor is needed later in scope."
+    },
+    {
+      "id": "receipt_formatter",
+      "file": "receipt_formatter.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 9,
+      "description": "Unused variable: `tax` is computed but never added to the total or included in the receipt output, so the computation is dead code and the receipt silently omits tax."
+    },
+    {
+      "id": "user_filter",
+      "file": "user_filter.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 5,
+      "description": "Singleton comparison: `user[\"active\"] == True` should be a plain truthy check; as written it silently excludes active users whose `active` field is truthy but not the literal `True` (e.g. a non-boolean truthy value)."
+    },
+    {
+      "id": "discount_rate",
+      "file": "discount_rate.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 8,
+      "description": "Inconsistent return statements: there is no `else`/default branch, so an unrecognized `customer_tier` causes the function to implicitly return `None`, which later crashes `apply_discount`'s arithmetic."
+    }
+  ]
+}
