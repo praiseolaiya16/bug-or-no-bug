@@ -21,7 +21,7 @@ from flask_cors import CORS
 
 from analyzers.llm_review import review_code
 from analyzers.static_analysis import run_static_analysis
-from scoring.metrics import precision_recall_f1, score_by_bug_type
+from scoring.metrics import mcnemar_test, precision_recall_f1, score_by_bug_type, score_by_source
 
 load_dotenv()
 
@@ -125,11 +125,13 @@ def get_dataset():
                 "id": bug["id"],
                 "file": bug["file"],
                 "bug_type": bug["bug_type"],
+                "source": bug["source"],
                 "code": file_path.read_text() if file_path.exists() else "",
                 "ground_truth": {
                     "is_bug": bug["is_bug"],
                     "line": bug["line"],
                     "description": bug["description"],
+                    "citation": bug.get("citation"),
                 },
             }
         )
@@ -199,24 +201,30 @@ def results():
         if llm_error:
             llm_error_count += 1
 
+        static_caught = any(
+            f.get("line") is not None and abs(f["line"] - bug["line"]) <= 2 for f in static_findings
+        )
+        llm_caught = any(
+            f.get("line") is not None and abs(f["line"] - bug["line"]) <= 2 for f in llm_findings
+        )
+
         per_sample.append(
             {
                 "id": bug["id"],
                 "file": bug["file"],
                 "bug_type": bug["bug_type"],
+                "source": bug["source"],
                 "line": bug["line"],
                 "description": bug["description"],
-                "static_caught": any(
-                    f.get("line") is not None and abs(f["line"] - bug["line"]) <= 2
-                    for f in static_findings
-                ),
+                "static_caught": static_caught,
                 "static_finding_count": len(static_findings),
+                # Every sample has exactly one seeded bug, so anything beyond
+                # the one true-positive match is noise: a false alarm.
+                "static_fp_count": len(static_findings) - (1 if static_caught else 0),
                 "static_error": static_error,
-                "llm_caught": any(
-                    f.get("line") is not None and abs(f["line"] - bug["line"]) <= 2
-                    for f in llm_findings
-                ),
+                "llm_caught": llm_caught,
                 "llm_finding_count": len(llm_findings),
+                "llm_fp_count": len(llm_findings) - (1 if llm_caught else 0),
                 "llm_error": llm_error,
             }
         )
@@ -235,6 +243,28 @@ def results():
                 "static": score_by_bug_type(all_static_findings, bugs),
                 "llm": score_by_bug_type(all_llm_findings, bugs) if llm_available else None,
             },
+            # Synthetic (hand-written) vs. real_world (adapted from a real
+            # CVE/issue/commit) — do findings generalize past hand-built
+            # examples, or only hold on the cases built to demonstrate them?
+            "by_source": {
+                "static": score_by_source(all_static_findings, bugs),
+                "llm": score_by_source(all_llm_findings, bugs) if llm_available else None,
+            },
+            # McNemar's exact test on the paired caught/missed outcomes,
+            # to say whether the static-vs-LLM gap is likely real or could
+            # just be noise at n=20. Only meaningful once both tools have
+            # actually run on every sample. Also split by source, though
+            # with only 10 real_world samples that subset has very low
+            # power and should be read as suggestive, not conclusive.
+            "significance": mcnemar_test(per_sample) if llm_available else None,
+            "significance_by_source": (
+                {
+                    source: mcnemar_test([row for row in per_sample if row["source"] == source])
+                    for source in ("synthetic", "real_world")
+                }
+                if llm_available
+                else None
+            ),
             "per_sample": per_sample,
             "llm_available": llm_available,
         }

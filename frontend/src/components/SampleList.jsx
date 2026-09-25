@@ -19,8 +19,9 @@ function Badge({ tool, state }) {
 }
 
 /**
- * The 20-sample browser: filename, category, and two compact pass/fail
- * badges per row. Clicking a row selects it for SampleDetail.
+ * The sample browser: filename, category, a "real" tag for bugs adapted
+ * from a real CVE/issue/commit, and two compact pass/fail badges per row.
+ * Clicking a row selects it for SampleDetail.
  *
  * @param {{ samples: Array<object>, selectedId: string|null, onSelect: (id: string) => void }} props
  */
@@ -40,6 +41,11 @@ function SampleList({ samples, selectedId, onSelect }) {
               {sample.file}
             </code>
             <span className={`chip category-tag-${sample.bug_type}`}>{sample.bug_type}</span>
+            {sample.source === "real_world" && (
+              <span className="chip source-tag-real" title="Adapted from a real CVE/issue/commit, not hand-written">
+                real
+              </span>
+            )}
           </span>
           <span className="sample-row-badges">
             <Badge tool="static" state={badgeState(sample, "static")} />

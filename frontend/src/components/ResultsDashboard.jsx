@@ -6,11 +6,15 @@ import SampleList from "./SampleList.jsx";
 import SummaryBar from "./SummaryBar.jsx";
 
 function mergeSamples(resultsData, datasetData) {
-  const codeById = new Map(datasetData.map((s) => [s.id, s.code]));
-  return resultsData.per_sample.map((row) => ({
-    ...row,
-    code: codeById.get(row.id) ?? "",
-  }));
+  const datasetById = new Map(datasetData.map((s) => [s.id, s]));
+  return resultsData.per_sample.map((row) => {
+    const fromDataset = datasetById.get(row.id);
+    return {
+      ...row,
+      code: fromDataset?.code ?? "",
+      citation: fromDataset?.ground_truth?.citation ?? null,
+    };
+  });
 }
 
 /**
@@ -105,7 +109,12 @@ function ResultsDashboard() {
 
   return (
     <div className="dashboard panel-transition">
-      <SummaryBar overall={results.overall} byBugType={results.by_bug_type} llmAvailable={results.llm_available} />
+      <SummaryBar
+        overall={results.overall}
+        byBugType={results.by_bug_type}
+        llmAvailable={results.llm_available}
+        significance={results.significance}
+      />
       <div className="sample-explorer">
         <SampleList samples={samples} selectedId={selectedId} onSelect={setSelectedId} />
         <SampleDetail

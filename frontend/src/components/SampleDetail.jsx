@@ -74,6 +74,10 @@ function SampleDetail({ sample, detail, loading, onRefresh, refreshing }) {
           {sample.description}
         </p>
 
+        {sample.source === "real_world" && sample.citation && (
+          <p className="citation-note">↳ {sample.citation}</p>
+        )}
+
         <CodeBlock code={sample.code} bugLine={sample.line} staticLines={staticLines} llmLines={llmLines} />
 
         <div className="findings-columns">

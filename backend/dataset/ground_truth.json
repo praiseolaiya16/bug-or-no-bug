@@ -6,7 +6,9 @@
     "is_bug": "boolean - whether this sample actually contains a bug",
     "bug_type": "string - e.g. 'off-by-one', 'null-deref', 'sql-injection', or null if not a bug",
     "line": "integer|null - line number of the bug, if applicable",
-    "description": "string - short human description of the bug"
+    "description": "string - short human description of the bug",
+    "source": "string - 'synthetic' (hand-written for this project) or 'real_world' (adapted from a real CVE/issue/commit)",
+    "citation": "string|null - source citation for real_world entries (CVE id, issue link, etc.), null for synthetic"
   },
   "bugs": [
     {
@@ -15,7 +17,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 11,
-      "description": "Off-by-one: `end = start + page_size + 1` includes one extra item, so each page overlaps the next page by one item."
+      "description": "Off-by-one: `end = start + page_size + 1` includes one extra item, so each page overlaps the next page by one item.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "moving_average",
@@ -23,7 +27,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 7,
-      "description": "Off-by-one: `range(len(values) - window)` stops one iteration short, so the moving average silently drops the last valid window."
+      "description": "Off-by-one: `range(len(values) - window)` stops one iteration short, so the moving average silently drops the last valid window.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "chunk_list",
@@ -31,7 +37,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 7,
-      "description": "Off-by-one: `range(0, len(items) - 1, batch_size)` can exclude a valid starting index at `len(items) - 1`, silently dropping the last chunk of items."
+      "description": "Off-by-one: `range(0, len(items) - 1, batch_size)` can exclude a valid starting index at `len(items) - 1`, silently dropping the last chunk of items.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "battery_monitor",
@@ -39,7 +47,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 9,
-      "description": "Wrong comparison operator: uses `>` instead of `<=`, so batteries above the low-battery threshold are reported as low and batteries at or below it are not."
+      "description": "Wrong comparison operator: uses `>` instead of `<=`, so batteries above the low-battery threshold are reported as low and batteries at or below it are not.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "shipping_fee",
@@ -47,7 +57,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 7,
-      "description": "Wrong comparison operator: uses `<=` instead of `>=`, so orders under the free-shipping threshold ship free while orders that actually qualify are charged."
+      "description": "Wrong comparison operator: uses `<=` instead of `>=`, so orders under the free-shipping threshold ship free while orders that actually qualify are charged.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "grade_calculator",
@@ -55,7 +67,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 7,
-      "description": "Wrong comparison operator: the 'C' branch uses `>` instead of `>=`, so a score of exactly 70 incorrectly falls through to grade 'D'."
+      "description": "Wrong comparison operator: the 'C' branch uses `>` instead of `>=`, so a score of exactly 70 incorrectly falls through to grade 'D'.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "binary_search",
@@ -63,7 +77,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 6,
-      "description": "Incorrect boundary condition: loop uses `low < high` instead of `low <= high`, so the search misses the target when it is the last remaining candidate."
+      "description": "Incorrect boundary condition: loop uses `low < high` instead of `low <= high`, so the search misses the target when it is the last remaining candidate.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "password_validator",
@@ -71,7 +87,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 8,
-      "description": "Incorrect boundary condition: uses `length <= MIN_LENGTH` instead of `length < MIN_LENGTH`, so a password exactly at the minimum length is incorrectly rejected."
+      "description": "Incorrect boundary condition: uses `length <= MIN_LENGTH` instead of `length < MIN_LENGTH`, so a password exactly at the minimum length is incorrectly rejected.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "shopping_cart",
@@ -79,7 +97,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 1,
-      "description": "Bad state handling: `cart=[]` is a mutable default argument, so the same list is reused and accumulates items across unrelated calls to `add_item`."
+      "description": "Bad state handling: `cart=[]` is a mutable default argument, so the same list is reused and accumulates items across unrelated calls to `add_item`.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "retry_tracker",
@@ -87,7 +107,9 @@
       "is_bug": true,
       "bug_type": "logic",
       "line": 15,
-      "description": "Bad state handling: `reset_on_success` is a no-op (`pass`), so `attempts` is never reset and a tracker that already succeeded still reports exhausted retries afterward."
+      "description": "Bad state handling: `reset_on_success` is a no-op (`pass`), so `attempts` is never reset and a tracker that already succeeded still reports exhausted retries afterward.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "sql_query",
@@ -95,7 +117,9 @@
       "is_bug": true,
       "bug_type": "security",
       "line": 9,
-      "description": "SQL injection: the query string is built with `%` string formatting on `username` instead of a parameterized query, so a crafted username can alter the SQL statement."
+      "description": "SQL injection: the query string is built with `%` string formatting on `username` instead of a parameterized query, so a crafted username can alter the SQL statement.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "run_diagnostics",
@@ -103,7 +127,9 @@
       "is_bug": true,
       "bug_type": "security",
       "line": 9,
-      "description": "Command injection: `hostname` is concatenated directly into a shell command passed to `os.system`, so a crafted hostname (e.g. containing `;`) can execute arbitrary shell commands."
+      "description": "Command injection: `hostname` is concatenated directly into a shell command passed to `os.system`, so a crafted hostname (e.g. containing `;`) can execute arbitrary shell commands.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "auth_config",
@@ -111,7 +137,9 @@
       "is_bug": true,
       "bug_type": "security",
       "line": 4,
-      "description": "Hardcoded secret: `SECRET_KEY` is a literal string committed in source rather than loaded from an environment variable or secret manager, exposing the signing key to anyone with source access."
+      "description": "Hardcoded secret: `SECRET_KEY` is a literal string committed in source rather than loaded from an environment variable or secret manager, exposing the signing key to anyone with source access.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "session_store",
@@ -119,7 +147,9 @@
       "is_bug": true,
       "bug_type": "security",
       "line": 13,
-      "description": "Insecure deserialization: `pickle.loads` is called on `raw_cookie_value`, which comes from a client-controlled cookie; a crafted pickle payload can execute arbitrary code."
+      "description": "Insecure deserialization: `pickle.loads` is called on `raw_cookie_value`, which comes from a client-controlled cookie; a crafted pickle payload can execute arbitrary code.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "password_hash",
@@ -127,7 +157,9 @@
       "is_bug": true,
       "bug_type": "security",
       "line": 6,
-      "description": "Weak cryptography: passwords are hashed with unsalted MD5, which is fast to brute-force and unsuitable for password storage; should use a slow, salted algorithm like bcrypt or scrypt."
+      "description": "Weak cryptography: passwords are hashed with unsalted MD5, which is fast to brute-force and unsuitable for password storage; should use a slow, salted algorithm like bcrypt or scrypt.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "config_parser",
@@ -135,7 +167,9 @@
       "is_bug": true,
       "bug_type": "style",
       "line": 8,
-      "description": "Bare except clause: `except:` catches every exception (including KeyboardInterrupt/SystemExit), silently masking bugs unrelated to int parsing."
+      "description": "Bare except clause: `except:` catches every exception (including KeyboardInterrupt/SystemExit), silently masking bugs unrelated to int parsing.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "order_summary",
@@ -143,7 +177,9 @@
       "is_bug": true,
       "bug_type": "style",
       "line": 3,
-      "description": "Shadowed builtin: the local variable `dict` shadows the builtin `dict` type within the function, which is confusing and error-prone if the constructor is needed later in scope."
+      "description": "Shadowed builtin: the local variable `dict` shadows the builtin `dict` type within the function, which is confusing and error-prone if the constructor is needed later in scope.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "receipt_formatter",
@@ -151,7 +187,9 @@
       "is_bug": true,
       "bug_type": "style",
       "line": 9,
-      "description": "Unused variable: `tax` is computed but never added to the total or included in the receipt output, so the computation is dead code and the receipt silently omits tax."
+      "description": "Unused variable: `tax` is computed but never added to the total or included in the receipt output, so the computation is dead code and the receipt silently omits tax.",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "user_filter",
@@ -159,7 +197,9 @@
       "is_bug": true,
       "bug_type": "style",
       "line": 5,
-      "description": "Singleton comparison: `user[\"active\"] == True` should be a plain truthy check; as written it silently excludes active users whose `active` field is truthy but not the literal `True` (e.g. a non-boolean truthy value)."
+      "description": "Singleton comparison: `user[\"active\"] == True` should be a plain truthy check; as written it silently excludes active users whose `active` field is truthy but not the literal `True` (e.g. a non-boolean truthy value).",
+      "source": "synthetic",
+      "citation": null
     },
     {
       "id": "discount_rate",
@@ -167,7 +207,109 @@
       "is_bug": true,
       "bug_type": "style",
       "line": 8,
-      "description": "Inconsistent return statements: there is no `else`/default branch, so an unrecognized `customer_tier` causes the function to implicitly return `None`, which later crashes `apply_discount`'s arithmetic."
+      "description": "Inconsistent return statements: there is no `else`/default branch, so an unrecognized `customer_tier` causes the function to implicitly return `None`, which later crashes `apply_discount`'s arithmetic.",
+      "source": "synthetic",
+      "citation": null
+    },
+    {
+      "id": "real_tarfile_extract",
+      "file": "real_tarfile_extract.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 7,
+      "description": "Path traversal: `archive.extractall(destination_dir)` doesn't validate member paths, so a crafted tar archive with '../' entries can write files outside destination_dir.",
+      "source": "real_world",
+      "citation": "CVE-2007-4559 \u2014 Python tarfile extractall() path traversal, affecting an estimated 350,000+ open-source projects (Trellix, 2022)."
+    },
+    {
+      "id": "real_yaml_config",
+      "file": "real_yaml_config.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 6,
+      "description": "Insecure deserialization: `yaml.load(config_text)` without a safe loader can construct and execute arbitrary Python objects from the YAML input.",
+      "source": "real_world",
+      "citation": "CVE-2017-18342 \u2014 PyYAML yaml.load() arbitrary code execution (fixed by making yaml.safe_load() / an explicit Loader the required interface)."
+    },
+    {
+      "id": "real_request_proxy",
+      "file": "real_request_proxy.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 6,
+      "description": "Header/CRLF injection: `search_term` is concatenated directly into the URL without rejecting \\r\\n sequences, letting a crafted search term inject extra HTTP headers into the outgoing request.",
+      "source": "real_world",
+      "citation": "CVE-2019-9947 \u2014 CRLF/header injection in Python's urllib due to insufficient validation of URL components (bpo-35906)."
+    },
+    {
+      "id": "real_redirect_after_login",
+      "file": "real_redirect_after_login.py",
+      "is_bug": true,
+      "bug_type": "security",
+      "line": 3,
+      "description": "Open redirect: checking only `target_url.startswith(\"/\")` treats protocol-relative URLs like '//evil.com' as safe, but browsers resolve them as absolute URLs to the attacker's site.",
+      "source": "real_world",
+      "citation": "CVE-2014-3730 \u2014 Django is_safe_url() open redirect via insufficiently validated redirect targets."
+    },
+    {
+      "id": "real_url_download",
+      "file": "real_url_download.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 15,
+      "description": "Off-by-one: an extra `chunks_read += 1` after the loop over-counts by one, reporting one more chunk read than actually occurred.",
+      "source": "real_world",
+      "citation": "Documented off-by-one in Python's stdlib urllib.URLopener.retrieve(), which reported reading one more block than it actually read."
+    },
+    {
+      "id": "real_date_range",
+      "file": "real_date_range.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 13,
+      "description": "Off-by-one: `duration_days` returns `(end - start).days`, which excludes the end date even though the class is documented as inclusive of both endpoints (e.g. Jan 1 to Jan 1 should span 1 day, not 0).",
+      "source": "real_world",
+      "citation": "Real off-by-one bug fixed in octoenergy/xocto PR #98 \u2014 a FiniteDateRange property returned a value exclusive of the end date despite the range being double-inclusive."
+    },
+    {
+      "id": "real_slice_window",
+      "file": "real_slice_window.py",
+      "is_bug": true,
+      "bug_type": "logic",
+      "line": 7,
+      "description": "Off-by-one in negative-step slice bounds: when `n == len(items)`, `stop = len(items) - n - 1` evaluates to -1, which Python re-interprets as index `len(items) - 1` rather than \"before index 0\", so the full-length case silently returns an empty list instead of everything reversed.",
+      "source": "real_world",
+      "citation": "Adapted from pandas-dev/pandas PR #55832 (merged Nov 2023) \u2014 a real off-by-one in negative-step slice boundary handling for PyArrow-backed arrays, simplified here into pure-Python list slicing."
+    },
+    {
+      "id": "real_agent_memory",
+      "file": "real_agent_memory.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 1,
+      "description": "Bad state handling: `agent_input: dict = {}` is a mutable default argument, so the same dict is reused and accumulates history across unrelated calls to `add_memory`.",
+      "source": "real_world",
+      "citation": "Exact bug pattern from agentuniverse-ai/agentUniverse GitHub Issue #1184 \u2014 three agent-memory methods declared mutable dict defaults, causing cross-call state pollution in long-running agent processes."
+    },
+    {
+      "id": "real_plugin_loader",
+      "file": "real_plugin_loader.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 8,
+      "description": "Bare except clause: `except:` catches every exception including SystemExit and KeyboardInterrupt, so a plugin that calls sys.exit() during import is silently treated as \"failed to load\" instead of actually exiting.",
+      "source": "real_world",
+      "citation": "Well-documented real-world anti-pattern (Pylint's own W0702 'bare-except' rule exists because of recurring incidents like this; no single canonical commit cited)."
+    },
+    {
+      "id": "real_permission_check",
+      "file": "real_permission_check.py",
+      "is_bug": true,
+      "bug_type": "style",
+      "line": 3,
+      "description": "Security check via `assert`: Python strips all assert statements when run with the -O optimization flag, so this authorization check silently disappears in an optimized production deployment.",
+      "source": "real_world",
+      "citation": "CWE-617 (Reachable Assertion) / Bandit rule B101 \u2014 using assert for security or business-logic validation is a well-documented real-world anti-pattern, distinct from any single CVE."
     }
   ]
 }

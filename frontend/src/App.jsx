@@ -9,7 +9,7 @@ function App() {
     <div className="app">
       <header className="app-header">
         <h1>bug-or-no-bug</h1>
-        <p>static analysis vs. llm review, scored against 20 seeded bugs</p>
+        <p>static analysis vs. llm review, scored against 30 seeded bugs (20 synthetic + 10 real-world)</p>
       </header>
       <main>
         <ResultsDashboard />
